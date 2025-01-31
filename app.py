@@ -4,7 +4,7 @@ import json
 import uuid  # Benzersiz participant_id oluşturmak içi
 from github import Github
 import base64
-
+GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
 REPO_NAME = "erksn-dev/ankt"
 FILE_PATH = "survey.db"
 GITHUB_PATH = "backup/survey.db"
