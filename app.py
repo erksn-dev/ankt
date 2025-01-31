@@ -2,6 +2,12 @@ import sqlite3
 import streamlit as st
 import json
 import uuid  # Benzersiz participant_id oluşturmak içi
+from github import Github
+import base64
+
+REPO_NAME = "erksn-dev/ankt"
+FILE_PATH = "survey.db"
+GITHUB_PATH = "backup/survey.db"
 hide_streamlit_style = """
     <style>
         .block-container { padding-top: 0rem; padding-bottom: 0rem; margin-top: 0rem; }
@@ -10,6 +16,24 @@ hide_streamlit_style = """
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+def upload_db_to_github():
+    try:
+        g = Github(GITHUB_TOKEN)
+        repo = g.get_repo(REPO_NAME)
+        with open(FILE_PATH, "rb") as f:
+            content = base64.b64encode(f.read()).decode()
+        repo.create_file(
+            path=GITHUB_PATH,
+            message="Otomatik veritabanı yedekleme",
+            content=content,
+            branch="main"
+        )
+        st.success("Veritabanı GitHub'a yüklendi!")
+    except Exception as e:
+        st.error(f"Hata oluştu: {e}")
+
+# Uygulama başladığında yedekleme yap
+upload_db_to_github()
 
 # Veritabanı bağlantı fonksiyonu
 def get_connection():
